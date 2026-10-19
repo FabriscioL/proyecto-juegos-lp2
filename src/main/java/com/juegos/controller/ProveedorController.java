@@ -3,12 +3,14 @@ package com.juegos.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
 
 import com.juegos.model.Proveedor;
 import com.juegos.service.ProveedorService;
@@ -20,20 +22,24 @@ public class ProveedorController {
     @Autowired
     private ProveedorService proveedorService;
 
-    @GetMapping("")
+    @GetMapping
     public String listarProveedores(Model model) {
         model.addAttribute("proveedores", proveedorService.listarProveedores());
-        return "proveedor"; 
+        return "proveedores/proveedor";
     }
 
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("proveedor", new Proveedor());
-        return "formulario_proveedor";
+        return "proveedores/formulario_proveedor";
     }
 
     @PostMapping("/guardar")
-    public String guardarProveedor(@ModelAttribute Proveedor proveedor, RedirectAttributes attributes) {
+    public String guardarProveedor(@Valid @ModelAttribute Proveedor proveedor, BindingResult bindingResult,
+            RedirectAttributes attributes) {
+        if (bindingResult.hasErrors()) {
+            return "proveedores/formulario_proveedor";
+        }
         try {
             proveedorService.guardarProveedor(proveedor);
             attributes.addFlashAttribute("mensajeExito", "¡Proveedor guardado con éxito!");
@@ -48,7 +54,7 @@ public class ProveedorController {
         Proveedor proveedor = proveedorService.buscarPorId(id);
         if (proveedor != null) {
             model.addAttribute("proveedor", proveedor);
-            return "formulario_proveedor";
+            return "proveedores/formulario_proveedor";
         } else {
             attributes.addFlashAttribute("mensajeError", "El proveedor no existe.");
             return "redirect:/proveedores";

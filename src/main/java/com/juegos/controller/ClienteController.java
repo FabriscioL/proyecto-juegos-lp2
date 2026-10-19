@@ -3,7 +3,9 @@ package com.juegos.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import com.juegos.model.Cliente;
 import com.juegos.service.ClienteService;
 
@@ -18,19 +20,22 @@ public class ClienteController {
     @GetMapping
     public String listarClientes(Model model) {
         model.addAttribute("clientes", clienteService.listarClientes());
-        return "cliente"; 
+        return "clientes/cliente";
     }
 
     
     @GetMapping("/nuevo")
     public String nuevoClienteForm(Model model) {
         model.addAttribute("cliente", new Cliente());
-        return "formulario_cliente"; 
+        return "clientes/formulario_cliente";
     }
 
     
     @PostMapping("/guardar")
-    public String guardarCliente(@ModelAttribute("cliente") Cliente cliente) {
+    public String guardarCliente(@Valid @ModelAttribute("cliente") Cliente cliente, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "clientes/formulario_cliente";
+        }
         clienteService.guardarCliente(cliente);
         return "redirect:/clientes";
     }
@@ -40,7 +45,7 @@ public class ClienteController {
     public String editarClienteForm(@PathVariable("id") Long id, Model model) {
         Cliente cliente = clienteService.buscarPorId(id);
         model.addAttribute("cliente", cliente);
-        return "formulario_cliente";
+        return "clientes/formulario_cliente";
     }
 
     

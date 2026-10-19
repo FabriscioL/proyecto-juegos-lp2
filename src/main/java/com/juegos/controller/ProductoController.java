@@ -3,6 +3,7 @@ package com.juegos.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.validation.Valid;
 
 import com.juegos.model.Producto;
 import com.juegos.service.CategoriaService;
@@ -25,36 +27,41 @@ public class ProductoController {
     @Autowired
     private CategoriaService categoriaService;
 
-    @GetMapping("")
+    @GetMapping
     public String listarProductos(Model model) {
         model.addAttribute("productos", productoService.listarProductos());
         model.addAttribute("categorias", categoriaService.listarCategorias());
-        return "lista"; 
+        return "productos/lista";
     }
 
     @GetMapping("/filtrar")
     public String filtrarProductos(@RequestParam("idCategoria") Integer idCategoria, Model model) {
         model.addAttribute("productos", productoService.listarPorCategoria(idCategoria));
         model.addAttribute("categorias", categoriaService.listarCategorias());
-        return "lista"; 
+        return "productos/lista";
     }
 
-    @GetMapping("/filtrarStock")
+    @GetMapping({"/filtrar-stock", "/filtrarStock"})
     public String filtrarPorStock(@RequestParam("stock") Integer stock, Model model) {
         model.addAttribute("productos", productoService.listarPorStockMenor(stock));
         model.addAttribute("categorias", categoriaService.listarCategorias());
-        return "lista"; 
+        return "productos/lista";
     }
 
     @GetMapping("/nuevo")
     public String mostrarFormularioNuevo(Model model) {
         model.addAttribute("producto", new Producto());
         model.addAttribute("categorias", categoriaService.listarCategorias()); 
-        return "formulario";
+        return "productos/formulario";
     }
 
     @PostMapping("/guardar")
-    public String guardarProducto(@ModelAttribute Producto producto, RedirectAttributes attributes) {
+    public String guardarProducto(@Valid @ModelAttribute Producto producto, BindingResult bindingResult,
+            Model model, RedirectAttributes attributes) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("categorias", categoriaService.listarCategorias());
+            return "productos/formulario";
+        }
         try {
             productoService.guardarProducto(producto);
             attributes.addFlashAttribute("mensajeExito", "¡Producto guardado con éxito!");
@@ -70,7 +77,7 @@ public class ProductoController {
         if (producto != null) {
             model.addAttribute("producto", producto);
             model.addAttribute("categorias", categoriaService.listarCategorias());
-            return "formulario"; 
+            return "productos/formulario";
         } else {
             attributes.addFlashAttribute("mensajeError", "El producto no existe.");
             return "redirect:/productos";

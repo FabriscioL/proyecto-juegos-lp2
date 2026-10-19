@@ -1,6 +1,8 @@
 package com.juegos.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import java.util.List;
 
@@ -15,6 +17,8 @@ public class Categoria {
     private Integer idCategoria;
 
     @Column(nullable = false, length = 50)
+    @NotBlank
+    @Size(max = 50)
     private String nombre;
 
     @OneToMany(mappedBy = "categoria")

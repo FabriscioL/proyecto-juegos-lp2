@@ -66,32 +66,38 @@
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Nombres:</label>
                     <input type="text" th:field="*{nombres}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Juan" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Apellidos:</label>
                     <input type="text" th:field="*{apellidos}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Pérez" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Correo Electrónico:</label>
                     <input type="email" th:field="*{correo}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. correo@gmail.com" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Contraseña:</label>
                     <input type="password" th:field="*{password}" class="form-control bg-dark text-white border-secondary" placeholder="******" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Teléfono:</label>
                     <!-- Validado para que solo acepte números -->
                     <input type="tel" th:field="*{telefono}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. 987654321" pattern="[0-9]+" title="Ingrese solo números válidos" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label text-accent fw-bold">Dirección:</label>
                     <input type="text" th:field="*{direccion}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Av. Principal 123" />
+                    <div class="text-danger" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
                 </div>
 
                 <div class="d-flex justify-content-between gap-2">

@@ -66,21 +66,25 @@
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Nombre del Juego:</label>
                     <input type="text" th:field="*{nombre}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Grand Theft Auto V" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label text-accent fw-bold">Descripción:</label>
                     <textarea th:field="*{descripcion}" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Breve descripción del juego..."></textarea>
+                    <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-accent fw-bold">Precio (S/):</label>
                         <input type="number" step="0.01" th:field="*{precio}" class="form-control bg-dark text-white border-secondary" placeholder="0.00" required min="0" />
+                        <div class="text-danger" th:if="${#fields.hasErrors('precio')}" th:errors="*{precio}"></div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label text-accent fw-bold">Stock:</label>
                         <input type="number" th:field="*{stock}" class="form-control bg-dark text-white border-secondary" placeholder="10" required min="0" />
+                        <div class="text-danger" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
                     </div>
                 </div>
 
@@ -90,11 +94,13 @@
                         <option value="">-- Seleccionar Categoría --</option>
                         <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
                     </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></div>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label text-accent fw-bold">Nombre del archivo de Imagen:</label>
                     <input type="text" th:field="*{imagen}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Minecraft.jpg" required />
+                    <div class="text-danger" th:if="${#fields.hasErrors('imagen')}" th:errors="*{imagen}"></div>
                 </div>
 
                 <div class="d-flex justify-content-between gap-2">
