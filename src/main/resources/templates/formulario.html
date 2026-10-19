@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Videojuego - JUEGOS.NET</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+		body {
+		    background-color: #1a0508;
+		    color: #ffffff;
+		}
+		.navbar-custom {
+		    background: linear-gradient(90deg, #4a0e17 0%, #cc1e36 100%);
+		    border-bottom: 2px solid #ffcc00;
+		}
+		.card-custom {
+		    background-color: #2b0d12;
+		    border: 1px solid #4a0e17;
+		}
+		.text-accent {
+		    color: #ffcc00;
+		}
+		.table-custom {
+		    color: #ffffff;
+		    background-color: #2b0d12;
+		}
+		.table-custom th {
+		    background-color: #4a0e17;
+		    color: #ffcc00;
+		}
+		.btn-primary-custom {
+		    background-color: #f25c19;
+		    border-color: #f25c19;
+		    color: #fff;
+		}
+		.btn-primary-custom:hover {
+		    background-color: #cc1e36;
+		    border-color: #cc1e36;
+		}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom px-3 mb-4">
+        <div class="container-fluid d-flex align-items-center">
+            <a class="navbar-brand d-flex align-items-center py-0" href="/productos">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 50px; width: auto;" class="d-inline-block align-middle">
+            </a>
+            <div class="d-flex gap-2">
+                <a th:href="@{/productos}" class="btn btn-outline-light btn-sm">Volver al Catálogo</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5" style="max-width: 650px;">
+        <div class="card card-custom text-white p-4 shadow">
+            <h3 class="text-accent fw-bold mb-4 text-center">
+                <i class="bi bi-controller"></i> 
+                <span th:text="${producto.idProducto == null ? 'Registrar Nuevo Juego' : 'Editar Videojuego'}"></span>
+            </h3>
+
+            <form th:action="@{/productos/guardar}" th:object="${producto}" method="post">
+                <input type="hidden" th:field="*{idProducto}" />
+
+                <div class="mb-3">
+                    <label class="form-label text-accent fw-bold">Nombre del Juego:</label>
+                    <input type="text" th:field="*{nombre}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Grand Theft Auto V" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-accent fw-bold">Descripción:</label>
+                    <textarea th:field="*{descripcion}" class="form-control bg-dark text-white border-secondary" rows="3" placeholder="Breve descripción del juego..."></textarea>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-bold">Precio (S/):</label>
+                        <input type="number" step="0.01" th:field="*{precio}" class="form-control bg-dark text-white border-secondary" placeholder="0.00" required min="0" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-bold">Stock:</label>
+                        <input type="number" th:field="*{stock}" class="form-control bg-dark text-white border-secondary" placeholder="10" required min="0" />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-accent fw-bold">Categoría:</label>
+                    <select th:field="*{categoria.idCategoria}" class="form-select bg-dark text-white border-secondary" required>
+                        <option value="">-- Seleccionar Categoría --</option>
+                        <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label text-accent fw-bold">Nombre del archivo de Imagen:</label>
+                    <input type="text" th:field="*{imagen}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Minecraft.jpg" required />
+                </div>
+
+                <div class="d-flex justify-content-between gap-2">
+                    <button type="submit" class="btn btn-primary-custom w-50 fw-bold">Guardar</button>
+                    <a th:href="@{/productos}" class="btn btn-outline-light w-50">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
