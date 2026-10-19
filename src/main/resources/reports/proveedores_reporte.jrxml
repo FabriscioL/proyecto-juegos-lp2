@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="proveedores_reporte"
+              pageWidth="595"
+              pageHeight="842"
+              columnWidth="555"
+              leftMargin="20"
+              rightMargin="20"
+              topMargin="20"
+              bottomMargin="20"
+              whenNoDataType="AllSectionsNoDetail">
+    <parameter name="titulo" class="java.lang.String"/>
+    <field name="idProveedor" class="java.lang.Integer"/>
+    <field name="nombre" class="java.lang.String"/>
+    <field name="contacto" class="java.lang.String"/>
+    <field name="telefono" class="java.lang.String"/>
+    <field name="correo" class="java.lang.String"/>
+
+    <title>
+        <band height="50">
+            <textField>
+                <reportElement x="0" y="10" width="555" height="30"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="18" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <columnHeader>
+        <band height="24">
+            <staticText><reportElement x="0" y="0" width="45" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[ID]]></text></staticText>
+            <staticText><reportElement x="45" y="0" width="140" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Proveedor]]></text></staticText>
+            <staticText><reportElement x="185" y="0" width="120" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Contacto]]></text></staticText>
+            <staticText><reportElement x="305" y="0" width="100" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Teléfono]]></text></staticText>
+            <staticText><reportElement x="405" y="0" width="150" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Correo]]></text></staticText>
+        </band>
+    </columnHeader>
+
+    <detail>
+        <band height="22">
+            <textField><reportElement x="0" y="0" width="45" height="22"/><textFieldExpression><![CDATA[$F{idProveedor}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="45" y="0" width="140" height="22"/><textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="185" y="0" width="120" height="22"/><textFieldExpression><![CDATA[$F{contacto}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="305" y="0" width="100" height="22"/><textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression></textField>
+            <textField isBlankWhenNull="true"><reportElement x="405" y="0" width="150" height="22"/><textFieldExpression><![CDATA[$F{correo}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>

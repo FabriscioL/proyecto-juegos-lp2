@@ -1,6 +1,14 @@
 package com.juegos.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,18 +22,46 @@ import jakarta.validation.Valid;
 
 import com.juegos.model.Proveedor;
 import com.juegos.service.ProveedorService;
+import com.juegos.service.ReporteService;
 
 @Controller
 @RequestMapping("/proveedores")
 public class ProveedorController {
 
-    @Autowired
-    private ProveedorService proveedorService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProveedorController.class);
+
+    private final ProveedorService proveedorService;
+
+    private final ReporteService reporteService;
+
+    public ProveedorController(ProveedorService proveedorService, ReporteService reporteService) {
+        this.proveedorService = proveedorService;
+        this.reporteService = reporteService;
+    }
 
     @GetMapping
     public String listarProveedores(Model model) {
         model.addAttribute("proveedores", proveedorService.listarProveedores());
         return "proveedores/proveedor";
+    }
+
+    @GetMapping("/reporte/pdf")
+    public ResponseEntity<byte[]> generarReporteProveedoresPdf() {
+        ClassPathResource plantilla = new ClassPathResource("reports/proveedores_reporte.jrxml");
+        try (InputStream reporteStream = plantilla.getInputStream()) {
+            byte[] pdf = reporteService.generarReportePdf(
+                    reporteStream,
+                    proveedorService.listarProveedores(),
+                    Map.of("titulo", "Directorio de proveedores"));
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=proveedores.pdf")
+                    .body(pdf);
+        } catch (IOException | IllegalStateException e) {
+            LOGGER.error("No se pudo generar el reporte PDF de proveedores", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/nuevo")

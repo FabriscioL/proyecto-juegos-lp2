@@ -57,7 +57,12 @@
     <div class="container mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="text-accent fw-bold"><i class="bi bi-truck"></i> Mantenimiento de Proveedores</h2>
-            <a th:href="@{/proveedores/nuevo}" class="btn btn-primary-custom btn-sm fw-bold"><i class="bi bi-plus-circle"></i> Nuevo Proveedor</a>
+            <div class="d-flex gap-2">
+                <a th:href="@{/proveedores/reporte/pdf}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-file-earmark-pdf"></i> Reporte PDF
+                </a>
+                <a th:href="@{/proveedores/nuevo}" class="btn btn-primary-custom btn-sm fw-bold"><i class="bi bi-plus-circle"></i> Nuevo Proveedor</a>
+            </div>
         </div>
 
         <div class="card card-custom p-3 shadow">

@@ -1,6 +1,14 @@
 package com.juegos.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,22 +24,51 @@ import jakarta.validation.Valid;
 import com.juegos.model.Producto;
 import com.juegos.service.CategoriaService;
 import com.juegos.service.ProductoService;
+import com.juegos.service.ReporteService;
 
 @Controller
 @RequestMapping("/productos")
 public class ProductoController {
 
-    @Autowired
-    private ProductoService productoService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductoController.class);
 
-    @Autowired
-    private CategoriaService categoriaService;
+    private final ProductoService productoService;
+
+    private final CategoriaService categoriaService;
+
+    private final ReporteService reporteService;
+
+    public ProductoController(ProductoService productoService, CategoriaService categoriaService,
+            ReporteService reporteService) {
+        this.productoService = productoService;
+        this.categoriaService = categoriaService;
+        this.reporteService = reporteService;
+    }
 
     @GetMapping
     public String listarProductos(Model model) {
         model.addAttribute("productos", productoService.listarProductos());
         model.addAttribute("categorias", categoriaService.listarCategorias());
         return "productos/lista";
+    }
+
+    @GetMapping("/reporte/pdf")
+    public ResponseEntity<byte[]> generarReporteJuegosPdf() {
+        ClassPathResource plantilla = new ClassPathResource("reports/juegos_reporte.jrxml");
+        try (InputStream reporteStream = plantilla.getInputStream()) {
+            byte[] pdf = reporteService.generarReportePdf(
+                    reporteStream,
+                    productoService.listarProductos(),
+                    Map.of("titulo", "Catálogo de videojuegos"));
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=juegos.pdf")
+                    .body(pdf);
+        } catch (IOException | IllegalStateException e) {
+            LOGGER.error("No se pudo generar el reporte PDF de juegos", e);
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
     @GetMapping("/filtrar")
