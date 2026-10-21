@@ -9,6 +9,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     
     List<Cliente> findByActivoTrue();
 
+    List<Cliente> findByActivoFalse();
+
     Optional<Cliente> findByIdClienteAndActivoTrue(Long idCliente);
 
     Cliente findByCorreo(String correo);
@@ -16,4 +18,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Cliente findByCorreoAndActivoTrue(String correo);
 
     boolean existsByCorreo(String correo);
+
+    long countByActivoTrue();
+
+    long countByActivoTrueAndRol(String rol);
 }

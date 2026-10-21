@@ -20,6 +20,11 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public List<Cliente> listarInactivos() {
+        return clienteRepository.findByActivoFalse();
+    }
+
+    @Override
     public Cliente guardarCliente(Cliente cliente) {
         if (cliente.getActivo() == null) {
             cliente.setActivo(true);
@@ -44,6 +49,14 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public void restaurarCliente(Long id) {
+        clienteRepository.findById(id).ifPresent(c -> {
+            c.setActivo(true);
+            clienteRepository.save(c);
+        });
+    }
+
+    @Override
     public Cliente validarLogin(String correo, String password) {
         Cliente cliente = clienteRepository.findByCorreoAndActivoTrue(correo);
         if (cliente != null && cliente.getPassword() != null && cliente.getPassword().equals(password)) {
@@ -60,5 +73,15 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente buscarPorCorreo(String correo) {
         return clienteRepository.findByCorreo(correo);
+    }
+
+    @Override
+    public long contarActivos() {
+        return clienteRepository.countByActivoTrue();
+    }
+
+    @Override
+    public long contarActivosPorRol(String rol) {
+        return clienteRepository.countByActivoTrueAndRol(rol);
     }
 }

@@ -63,8 +63,12 @@
                 <span class="fw-bold fs-4 text-accent d-none d-sm-inline">JUEGOS.NET</span>
             </a>
             <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/dashboard}" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
                 <a th:href="@{/productos}" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-controller"></i> Videojuegos
+                </a>
+                <a th:if="${session.usuarioRol == 'ADMIN'}" th:href="@{/papelera}" class="btn btn-outline-warning btn-sm">
+                    <i class="bi bi-recycle"></i> Papelera
                 </a>
                 <a th:href="@{/proveedores}" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-truck"></i> Proveedores

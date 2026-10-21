@@ -9,9 +9,15 @@ public interface ProductoRepository extends JpaRepository<Producto, Integer> {
 
     List<Producto> findByActivoTrue();
 
+    List<Producto> findByActivoFalse();
+
     Optional<Producto> findByIdProductoAndActivoTrue(Integer idProducto);
 
     List<Producto> findByCategoriaIdCategoriaAndActivoTrue(Integer idCategoria);
 
     List<Producto> findByStockLessThanEqualAndActivoTrue(Integer stock);
+
+    long countByActivoTrue();
+
+    long countByActivoTrueAndStockLessThanEqual(Integer stock);
 }

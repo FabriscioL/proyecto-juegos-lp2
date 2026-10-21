@@ -9,5 +9,9 @@ public interface ProveedorRepository extends JpaRepository<Proveedor, Integer> {
 
     List<Proveedor> findByActivoTrue();
 
+    List<Proveedor> findByActivoFalse();
+
     Optional<Proveedor> findByIdProveedorAndActivoTrue(Integer idProveedor);
+
+    long countByActivoTrue();
 }

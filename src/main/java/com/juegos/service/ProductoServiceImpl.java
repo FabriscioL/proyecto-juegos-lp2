@@ -20,6 +20,11 @@ public class ProductoServiceImpl implements ProductoService {
     }
 
     @Override
+    public List<Producto> listarInactivos() {
+        return productoRepository.findByActivoFalse();
+    }
+
+    @Override
     public void guardarProducto(Producto producto) {
         if (producto.getActivo() == null) {
             producto.setActivo(true);
@@ -31,6 +36,14 @@ public class ProductoServiceImpl implements ProductoService {
     public void eliminarProducto(Integer id) {
         productoRepository.findById(id).ifPresent(p -> {
             p.setActivo(false);
+            productoRepository.save(p);
+        });
+    }
+
+    @Override
+    public void restaurarProducto(Integer id) {
+        productoRepository.findById(id).ifPresent(p -> {
+            p.setActivo(true);
             productoRepository.save(p);
         });
     }
@@ -48,5 +61,15 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public List<Producto> listarPorStockMenor(Integer stock) {
         return productoRepository.findByStockLessThanEqualAndActivoTrue(stock);
+    }
+
+    @Override
+    public long contarActivos() {
+        return productoRepository.countByActivoTrue();
+    }
+
+    @Override
+    public long contarConBajoStock(int umbral) {
+        return productoRepository.countByActivoTrueAndStockLessThanEqual(umbral);
     }
 }

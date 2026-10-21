@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Analítico - JUEGOS.NET</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+		body {
+		    background-color: #1a0508;
+		    color: #ffffff;
+		}
+		.navbar-custom {
+		    background: linear-gradient(90deg, #4a0e17 0%, #cc1e36 100%);
+		    border-bottom: 2px solid #ffcc00;
+		}
+		.card-metric {
+		    background-color: #240a0f;
+		    border: 1px solid #4a0e17;
+		    border-radius: 10px;
+		    transition: transform 0.2s ease, box-shadow 0.2s ease;
+		}
+		.card-metric:hover {
+		    transform: translateY(-4px);
+		    box-shadow: 0 8px 24px rgba(204, 30, 54, 0.25);
+		}
+		.text-accent {
+		    color: #ffcc00;
+		}
+		.metric-value {
+		    font-size: 2.2rem;
+		    font-weight: 700;
+		}
+		.table-custom {
+		    color: #ffffff;
+		    background-color: #240a0f;
+		}
+		.table-custom th {
+		    background-color: #4a0e17;
+		    color: #ffcc00;
+		}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom px-3 mb-4">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center py-0" th:href="@{/productos}">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 48px; width: auto;" class="d-inline-block align-middle me-2 rounded">
+                <span class="fw-bold fs-4 text-accent">JUEGOS.NET</span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/productos}" class="btn btn-outline-light btn-sm"><i class="bi bi-controller"></i> Videojuegos</a>
+                <a th:href="@{/proveedores}" class="btn btn-outline-light btn-sm"><i class="bi bi-truck"></i> Proveedores</a>
+                <a th:href="@{/clientes}" class="btn btn-outline-light btn-sm"><i class="bi bi-people-fill"></i> Usuarios</a>
+                <a th:if="${session.usuarioRol == 'ADMIN'}" th:href="@{/papelera}" class="btn btn-outline-warning btn-sm"><i class="bi bi-recycle"></i> Papelera</a>
+                <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm ms-2" title="Cerrar sesión"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="text-accent fw-bold mb-1"><i class="bi bi-speedometer2"></i> Dashboard General</h2>
+                <p class="text-light small mb-0">Métricas en tiempo real del inventario, usuarios y proveedores del sistema.</p>
+            </div>
+            <a th:href="@{/productos/reporte/pdf}" target="_blank" class="btn btn-outline-warning btn-sm fw-bold">
+                <i class="bi bi-file-earmark-pdf"></i> Reporte Catálogo
+            </a>
+        </div>
+
+        <!-- Tarjetas de Métricas -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-metric p-3 text-center">
+                    <i class="bi bi-controller fs-2 text-warning mb-1"></i>
+                    <div class="text-light small text-uppercase fw-semibold">Juegos Activos</div>
+                    <div class="metric-value text-accent" th:text="${totalProductos}"></div>
+                    <small class="text-muted">En catálogo disponible</small>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-metric p-3 text-center">
+                    <i class="bi bi-exclamation-octagon fs-2 text-danger mb-1"></i>
+                    <div class="text-light small text-uppercase fw-semibold">Alerta de Stock (≤ 30)</div>
+                    <div class="metric-value text-danger" th:text="${bajoStock}"></div>
+                    <small class="text-muted">Juegos por reponer</small>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-metric p-3 text-center">
+                    <i class="bi bi-people-fill fs-2 text-info mb-1"></i>
+                    <div class="text-light small text-uppercase fw-semibold">Total Usuarios</div>
+                    <div class="metric-value text-info" th:text="${totalUsuarios}"></div>
+                    <small class="text-muted" th:text="${totalClientes + ' clientes / ' + totalAdmins + ' admins'}"></small>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-6">
+                <div class="card card-metric p-3 text-center">
+                    <i class="bi bi-truck fs-2 text-success mb-1"></i>
+                    <div class="text-light small text-uppercase fw-semibold">Proveedores</div>
+                    <div class="metric-value text-success" th:text="${totalProveedores}"></div>
+                    <small class="text-muted">Empresas registradas</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla Resumen de Stock Crítico -->
+        <div class="card card-metric p-3 mb-4">
+            <h5 class="text-accent fw-bold mb-3"><i class="bi bi-box-seam"></i> Inventario de Videojuegos y Niveles de Stock</h5>
+            <div class="table-responsive">
+                <table class="table table-custom table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Juego</th>
+                            <th>Categoría</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th>Estado de Stock</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="p : ${productos}">
+                            <td th:text="${p.idProducto}"></td>
+                            <td class="fw-bold" th:text="${p.nombre}"></td>
+                            <td th:text="${p.categoria != null ? p.categoria.nombre : '-'}"></td>
+                            <td th:text="${'S/ ' + p.precio}"></td>
+                            <td class="fw-bold" th:text="${p.stock}"></td>
+                            <td>
+                                <span th:if="${p.stock <= 25}" class="badge bg-danger">Crítico (≤ 25)</span>
+                                <span th:if="${p.stock > 25 and p.stock <= 50}" class="badge bg-warning text-dark">Medio (26 - 50)</span>
+                                <span th:if="${p.stock > 50}" class="badge bg-success">Óptimo (> 50)</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

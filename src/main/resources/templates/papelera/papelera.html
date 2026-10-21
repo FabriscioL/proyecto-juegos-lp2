@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Papelera de Reciclaje - JUEGOS.NET</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+		body {
+		    background-color: #1a0508;
+		    color: #ffffff;
+		}
+		.navbar-custom {
+		    background: linear-gradient(90deg, #4a0e17 0%, #cc1e36 100%);
+		    border-bottom: 2px solid #ffcc00;
+		}
+		.card-custom {
+		    background-color: #2b0d12;
+		    border: 1px solid #4a0e17;
+		}
+		.text-accent {
+		    color: #ffcc00;
+		}
+		.table-custom {
+		    color: #ffffff;
+		    background-color: #2b0d12;
+		}
+		.table-custom th {
+		    background-color: #4a0e17;
+		    color: #ffcc00;
+		}
+		.btn-primary-custom {
+		    background-color: #f25c19;
+		    border-color: #f25c19;
+		    color: #fff;
+		}
+		.nav-pills .nav-link {
+		    color: #e0e0e0;
+		    background-color: #240a0f;
+		    border: 1px solid #4a0e17;
+		    margin-right: 8px;
+		}
+		.nav-pills .nav-link.active {
+		    background-color: #cc1e36;
+		    color: #fff;
+		    font-weight: bold;
+		}
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom px-3 mb-4">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center py-0" th:href="@{/productos}">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 48px; width: auto;" class="d-inline-block align-middle me-2 rounded">
+                <span class="fw-bold fs-4 text-accent">JUEGOS.NET</span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/dashboard}" class="btn btn-outline-light btn-sm"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                <a th:href="@{/productos}" class="btn btn-outline-light btn-sm"><i class="bi bi-controller"></i> Videojuegos</a>
+                <a th:href="@{/proveedores}" class="btn btn-outline-light btn-sm"><i class="bi bi-truck"></i> Proveedores</a>
+                <a th:href="@{/clientes}" class="btn btn-outline-light btn-sm"><i class="bi bi-people-fill"></i> Usuarios</a>
+                <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm ms-2" title="Cerrar sesión"><i class="bi bi-box-arrow-right"></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h2 class="text-accent fw-bold mb-1"><i class="bi bi-recycle"></i> Papelera de Reciclaje (Borrado Lógico)</h2>
+                <p class="text-light small mb-0">Demostración en vivo de recuperación de registros desactivados lógicamente.</p>
+            </div>
+        </div>
+
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${mensajeExito}"></span>
+        </div>
+
+        <!-- Pestañas de la papelera -->
+        <ul class="nav nav-pills mb-3" id="papeleraTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="juegos-tab" data-bs-toggle="pill" data-bs-target="#juegos" type="button" role="tab">
+                    🎮 Videojuegos (<span th:text="${#lists.size(productosInactivos)}"></span>)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="proveedores-tab" data-bs-toggle="pill" data-bs-target="#proveedores" type="button" role="tab">
+                    🚚 Proveedores (<span th:text="${#lists.size(proveedoresInactivos)}"></span>)
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="clientes-tab" data-bs-toggle="pill" data-bs-target="#clientes" type="button" role="tab">
+                    👥 Usuarios/Clientes (<span th:text="${#lists.size(clientesInactivos)}"></span>)
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="papeleraTabsContent">
+            <!-- TAB JUEGOS -->
+            <div class="tab-pane fade show active" id="juegos" role="tabpanel">
+                <div class="card card-custom p-3 shadow">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre del Juego</th>
+                                    <th>Categoría</th>
+                                    <th>Precio</th>
+                                    <th>Stock</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="p : ${productosInactivos}">
+                                    <td th:text="${p.idProducto}"></td>
+                                    <td class="fw-bold" th:text="${p.nombre}"></td>
+                                    <td th:text="${p.categoria != null ? p.categoria.nombre : '-'}"></td>
+                                    <td th:text="${'S/ ' + p.precio}"></td>
+                                    <td th:text="${p.stock}"></td>
+                                    <td><span class="badge bg-danger">Inactivo (Oculto)</span></td>
+                                    <td class="text-center">
+                                        <a th:href="@{/papelera/restaurar-producto/{id}(id=${p.idProducto})}" class="btn btn-success btn-sm fw-bold">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(productosInactivos)}">
+                                    <td colspan="7" class="text-center text-muted py-4">No hay videojuegos en la papelera.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB PROVEEDORES -->
+            <div class="tab-pane fade" id="proveedores" role="tabpanel">
+                <div class="card card-custom p-3 shadow">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Proveedor</th>
+                                    <th>Contacto</th>
+                                    <th>Teléfono</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="pr : ${proveedoresInactivos}">
+                                    <td th:text="${pr.idProveedor}"></td>
+                                    <td class="fw-bold" th:text="${pr.nombre}"></td>
+                                    <td th:text="${pr.contacto}"></td>
+                                    <td th:text="${pr.telefono}"></td>
+                                    <td><span class="badge bg-danger">Inactivo (Oculto)</span></td>
+                                    <td class="text-center">
+                                        <a th:href="@{/papelera/restaurar-proveedor/{id}(id=${pr.idProveedor})}" class="btn btn-success btn-sm fw-bold">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(proveedoresInactivos)}">
+                                    <td colspan="6" class="text-center text-muted py-4">No hay proveedores en la papelera.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB USUARIOS -->
+            <div class="tab-pane fade" id="clientes" role="tabpanel">
+                <div class="card card-custom p-3 shadow">
+                    <div class="table-responsive">
+                        <table class="table table-custom table-hover align-middle mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Correo</th>
+                                    <th>Rol</th>
+                                    <th>Estado</th>
+                                    <th class="text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="c : ${clientesInactivos}">
+                                    <td th:text="${c.idCliente}"></td>
+                                    <td class="fw-bold" th:text="${c.nombres + ' ' + c.apellidos}"></td>
+                                    <td th:text="${c.correo}"></td>
+                                    <td><span class="badge bg-secondary" th:text="${c.rol}"></span></td>
+                                    <td><span class="badge bg-danger">Inactivo (Oculto)</span></td>
+                                    <td class="text-center">
+                                        <a th:href="@{/papelera/restaurar-cliente/{id}(id=${c.idCliente})}" class="btn btn-success btn-sm fw-bold">
+                                            <i class="bi bi-arrow-counterclockwise"></i> Restaurar
+                                        </a>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(clientesInactivos)}">
+                                    <td colspan="6" class="text-center text-muted py-4">No hay usuarios en la papelera.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

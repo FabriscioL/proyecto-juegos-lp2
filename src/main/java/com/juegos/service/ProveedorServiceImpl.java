@@ -20,6 +20,11 @@ public class ProveedorServiceImpl implements ProveedorService {
     }
 
     @Override
+    public List<Proveedor> listarInactivos() {
+        return proveedorRepository.findByActivoFalse();
+    }
+
+    @Override
     public void guardarProveedor(Proveedor proveedor) {
         if (proveedor.getActivo() == null) {
             proveedor.setActivo(true);
@@ -38,5 +43,18 @@ public class ProveedorServiceImpl implements ProveedorService {
             p.setActivo(false);
             proveedorRepository.save(p);
         });
+    }
+
+    @Override
+    public void restaurarProveedor(Integer id) {
+        proveedorRepository.findById(id).ifPresent(p -> {
+            p.setActivo(true);
+            proveedorRepository.save(p);
+        });
+    }
+
+    @Override
+    public long contarActivos() {
+        return proveedorRepository.countByActivoTrue();
     }
 }

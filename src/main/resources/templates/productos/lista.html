@@ -66,10 +66,21 @@
 
             <!-- Navegación según Rol -->
             <div class="d-flex align-items-center gap-2">
+                <!-- Dashboard: Visible para ADMIN y VENDEDOR -->
+                <a th:if="${session.usuarioRol == 'ADMIN' or session.usuarioRol == 'VENDEDOR'}"
+                   th:href="@{/dashboard}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+
                 <!-- Reportes: visible para ADMIN y VENDEDOR -->
                 <a th:if="${session.usuarioRol == 'ADMIN' or session.usuarioRol == 'VENDEDOR'}"
                    th:href="@{/productos/reporte/pdf}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-file-earmark-pdf"></i> Reporte PDF
+                </a>
+
+                <!-- Papelera (Borrado Lógico): Solo ADMIN -->
+                <a th:if="${session.usuarioRol == 'ADMIN'}" th:href="@{/papelera}" class="btn btn-outline-warning btn-sm" title="Papelera de reciclaje y restauración">
+                    <i class="bi bi-recycle"></i> Papelera
                 </a>
 
                 <!-- Nuevo Juego: Solo ADMIN -->
