@@ -5,11 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "producto")
-@Data
+@Getter
+@Setter
 public class Producto {
 
     @Id
@@ -46,4 +48,16 @@ public class Producto {
 
     @Column(name = "activo", nullable = false)
     private Boolean activo = true;
+
+    @Override
+    public String toString() {
+        return "Producto{" +
+                "idProducto=" + idProducto +
+                ", nombre='" + nombre + '\'' +
+                ", precio=" + precio +
+                ", stock=" + stock +
+                ", categoria=" + (categoria != null ? categoria.getNombre() : null) +
+                ", activo=" + activo +
+                '}';
+    }
 }

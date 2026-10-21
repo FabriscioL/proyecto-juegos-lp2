@@ -3,12 +3,14 @@ package com.juegos.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
 
 @Entity
 @Table(name = "categoria")
-@Data 
+@Getter
+@Setter
 public class Categoria {
 
     @Id
@@ -23,4 +25,12 @@ public class Categoria {
 
     @OneToMany(mappedBy = "categoria")
     private List<Producto> productos;
+
+    @Override
+    public String toString() {
+        return "Categoria{" +
+                "idCategoria=" + idCategoria +
+                ", nombre='" + nombre + '\'' +
+                '}';
+    }
 }
