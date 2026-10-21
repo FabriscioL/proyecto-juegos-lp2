@@ -16,30 +16,49 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public List<Cliente> listarClientes() {
-        return clienteRepository.findAll();
+        return clienteRepository.findByActivoTrue();
     }
 
     @Override
     public Cliente guardarCliente(Cliente cliente) {
+        if (cliente.getActivo() == null) {
+            cliente.setActivo(true);
+        }
+        if (cliente.getRol() == null || cliente.getRol().trim().isEmpty()) {
+            cliente.setRol("CLIENTE");
+        }
         return clienteRepository.save(cliente);
     }
 
     @Override
     public Cliente buscarPorId(Long id) {
-        return clienteRepository.findById(id).orElse(null);
+        return clienteRepository.findByIdClienteAndActivoTrue(id).orElse(null);
     }
 
     @Override
     public void eliminarCliente(Long id) {
-        clienteRepository.deleteById(id);
+        clienteRepository.findById(id).ifPresent(c -> {
+            c.setActivo(false);
+            clienteRepository.save(c);
+        });
     }
 
     @Override
     public Cliente validarLogin(String correo, String password) {
-        Cliente cliente = clienteRepository.findByCorreo(correo);
-        if (cliente != null && cliente.getPassword().equals(password)) {
+        Cliente cliente = clienteRepository.findByCorreoAndActivoTrue(correo);
+        if (cliente != null && cliente.getPassword() != null && cliente.getPassword().equals(password)) {
             return cliente;
         }
         return null;
+    }
+
+    @Override
+    public boolean existePorCorreo(String correo) {
+        return clienteRepository.existsByCorreo(correo);
+    }
+
+    @Override
+    public Cliente buscarPorCorreo(String correo) {
+        return clienteRepository.findByCorreo(correo);
     }
 }

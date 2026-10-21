@@ -1,12 +1,17 @@
 package com.juegos.repository;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import com.juegos.model.Producto;
 
 public interface ProductoRepository extends JpaRepository<Producto, Integer> {
-    
-    List<Producto> findByCategoriaIdCategoria(Integer idCategoria);
-    
-    List<Producto> findByStockLessThanEqual(Integer stock);
+
+    List<Producto> findByActivoTrue();
+
+    Optional<Producto> findByIdProductoAndActivoTrue(Integer idProducto);
+
+    List<Producto> findByCategoriaIdCategoriaAndActivoTrue(Integer idCategoria);
+
+    List<Producto> findByStockLessThanEqualAndActivoTrue(Integer stock);
 }

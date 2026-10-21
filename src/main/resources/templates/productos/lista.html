@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>JUEGOS.NET</title>
+    <title>JUEGOS.NET - Catálogo de Videojuegos</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
@@ -37,41 +37,89 @@
 		.btn-primary-custom:hover {
 		    background-color: #cc1e36;
 		    border-color: #cc1e36;
+		    color: #fff;
+		}
+		.badge-admin {
+		    background-color: #ffcc00;
+		    color: #000;
+		    font-weight: bold;
+		}
+		.badge-vendedor {
+		    background-color: #0dcaf0;
+		    color: #000;
+		    font-weight: bold;
+		}
+		.badge-cliente {
+		    background-color: #6c757d;
+		    color: #fff;
 		}
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom px-3 mb-4">
-        <div class="container-fluid d-flex align-items-center">
-            <a class="navbar-brand d-flex align-items-center py-0" href="/productos">
-                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 50px; width: auto;" class="d-inline-block align-middle">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center py-0" th:href="@{/productos}">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 48px; width: auto;" class="d-inline-block align-middle me-2 rounded">
+                <span class="fw-bold fs-4 text-accent d-none d-sm-inline">JUEGOS.NET</span>
             </a>
-            <div class="d-flex gap-2">
-                <a th:href="@{/productos/reporte/pdf}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">
+
+            <!-- Navegación según Rol -->
+            <div class="d-flex align-items-center gap-2">
+                <!-- Reportes: visible para ADMIN y VENDEDOR -->
+                <a th:if="${session.usuarioRol == 'ADMIN' or session.usuarioRol == 'VENDEDOR'}"
+                   th:href="@{/productos/reporte/pdf}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-file-earmark-pdf"></i> Reporte PDF
                 </a>
-                <a th:href="@{/productos/nuevo}" class="btn btn-primary-custom btn-sm">Nuevo Juego</a>
-                <a th:href="@{/proveedores}" class="btn btn-outline-light btn-sm">Proveedores</a>
-                <a th:href="@{/clientes}" class="btn btn-outline-light btn-sm">Clientes</a>
+
+                <!-- Nuevo Juego: Solo ADMIN -->
+                <a th:if="${session.usuarioRol == 'ADMIN'}" th:href="@{/productos/nuevo}" class="btn btn-primary-custom btn-sm">
+                    <i class="bi bi-plus-circle"></i> Nuevo Juego
+                </a>
+
+                <!-- Proveedores: Visible para ADMIN y VENDEDOR -->
+                <a th:if="${session.usuarioRol == 'ADMIN' or session.usuarioRol == 'VENDEDOR'}"
+                   th:href="@{/proveedores}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-truck"></i> Proveedores
+                </a>
+
+                <!-- Usuarios / Clientes: Visible para ADMIN y VENDEDOR -->
+                <a th:if="${session.usuarioRol == 'ADMIN' or session.usuarioRol == 'VENDEDOR'}"
+                   th:href="@{/clientes}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-people-fill"></i> <span th:text="${session.usuarioRol == 'ADMIN' ? 'Gestión de Usuarios' : 'Clientes'}"></span>
+                </a>
+
+                <!-- Datos de Sesión y Logout -->
+                <div class="d-flex align-items-center ms-2 border-start border-secondary ps-3">
+                    <div class="me-2 text-end d-none d-md-block">
+                        <small class="d-block text-light" th:text="${session.usuarioNombre}"></small>
+                        <span th:if="${session.usuarioRol == 'ADMIN'}" class="badge badge-admin">ADMINISTRADOR</span>
+                        <span th:if="${session.usuarioRol == 'VENDEDOR'}" class="badge badge-vendedor">VENDEDOR</span>
+                        <span th:if="${session.usuarioRol == 'CLIENTE'}" class="badge badge-cliente">CLIENTE</span>
+                    </div>
+                    <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm" title="Cerrar sesión">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container mb-5">
 
-        <div class="p-4 mb-4 rounded-3 banner-custom text-center shadow">
+        <div class="p-4 mb-4 rounded-3 text-center shadow" style="background: linear-gradient(180deg, #380e15 0%, #1a0508 100%); border: 1px solid #4a0e17;">
             <h2 class="fw-bold text-accent">🎮 CATÁLOGO DE VIDEOJUEGOS</h2>
-            <p class="text-light mb-0">Explora las mejores ofertas y gestiona tu inventario fácilmente.</p>
+            <p class="text-light mb-0">Explora las mejores ofertas y gestiona tu catálogo de manera rápida y segura.</p>
         </div>
 
+        <!-- Filtros -->
         <div class="row mb-4 g-3">
             <div class="col-md-6">
                 <form th:action="@{/productos/filtrar}" method="get" class="card card-custom text-white p-3 shadow-sm">
-                    <label class="form-label fw-bold text-accent">Filtrar por Categoría:</label>
+                    <label class="form-label fw-bold text-accent"><i class="bi bi-funnel"></i> Filtrar por Categoría:</label>
                     <div class="input-group">
                         <select name="idCategoria" class="form-select bg-dark text-white border-secondary" required>
-                            <option value="">-- Seleccione --</option>
+                            <option value="">-- Seleccione Categoría --</option>
                             <option th:each="cat : ${categorias}" th:value="${cat.idCategoria}" th:text="${cat.nombre}"></option>
                         </select>
                         <button type="submit" class="btn btn-primary-custom">Filtrar</button>
@@ -82,19 +130,25 @@
 
             <div class="col-md-6">
                 <form th:action="@{/productos/filtrar-stock}" method="get" class="card card-custom text-white p-3 shadow-sm">
-                    <label class="form-label fw-bold text-accent">Filtrar por Stock Máximo:</label>
+                    <label class="form-label fw-bold text-accent"><i class="bi bi-box-seam"></i> Filtrar por Stock Máximo:</label>
                     <div class="input-group">
                         <input type="number" name="stock" class="form-control bg-dark text-white border-secondary" placeholder="Ej. 50" required min="0">
-                        <button type="submit" class="btn btn-warning fw-bold">Stock</button>
+                        <button type="submit" class="btn btn-warning fw-bold">Filtrar Stock</button>
                         <a th:href="@{/productos}" class="btn btn-outline-light">Todos</a>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div th:if="${mensajeExito}" class="alert alert-success" role="alert" th:text="${mensajeExito}"></div>
-        <div th:if="${mensajeError}" class="alert alert-danger" role="alert" th:text="${mensajeError}"></div>
+        <!-- Mensajes informativos -->
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${mensajeExito}"></span>
+        </div>
+        <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${mensajeError}"></span>
+        </div>
 
+        <!-- Listado de Juegos -->
         <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 g-4">
             <div class="col" th:each="p : ${productos}">
                 <div class="card card-custom text-white h-100 shadow">
@@ -102,8 +156,8 @@
                     <img th:src="${p.imagen != null and p.imagen.startsWith('http') ? p.imagen : '/img/productos/' + p.imagen}" 
                          class="card-img-top" 
                          style="height: 180px; object-fit: cover;" 
-                         onerror="this.src='https://via.placeholder.com/300x180?text=Sin+Imagen';" 
-                         alt="Imagen">
+                         onerror="this.src='https://via.placeholder.com/300x180?text=Juegos.Net';" 
+                         alt="Imagen del juego">
 
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title fw-bold text-accent" th:text="${p.nombre}"></h5>
@@ -111,11 +165,16 @@
                         
                         <div class="mt-auto">
                             <p class="mb-1 text-warning fw-bold" th:text="${'Precio: S/ ' + p.precio}"></p>
-                            <p class="mb-3 text-light small" th:text="${'Stock: ' + p.stock}"></p>
+                            <p class="mb-3 text-light small" th:text="${'Stock disponible: ' + p.stock}"></p>
 
-                            <div class="d-flex justify-content-between gap-2">
-                                <a th:href="@{/productos/editar/{id}(id=${p.idProducto})}" class="btn btn-warning btn-sm w-50 fw-bold">Editar</a>
-                                <a th:href="@{/productos/eliminar/{id}(id=${p.idProducto})}" class="btn btn-danger btn-sm w-50" onclick="return confirm('¿Eliminar producto?');">Eliminar</a>
+                            <!-- Acciones: Solo visibles para ADMINISTRADOR -->
+                            <div th:if="${session.usuarioRol == 'ADMIN'}" class="d-flex justify-content-between gap-2">
+                                <a th:href="@{/productos/editar/{id}(id=${p.idProducto})}" class="btn btn-warning btn-sm w-50 fw-bold">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                                <a th:href="@{/productos/eliminar/{id}(id=${p.idProducto})}" class="btn btn-danger btn-sm w-50" onclick="return confirm('¿Desea desactivar (borrado lógico) este producto?');">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -123,8 +182,9 @@
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(productos)}" class="text-center mt-5">
-            <p class="text-muted">No hay productos para mostrar.</p>
+        <div th:if="${#lists.isEmpty(productos)}" class="text-center mt-5 p-5 card card-custom">
+            <i class="bi bi-folder-x fs-1 text-secondary"></i>
+            <p class="text-muted mt-2">No hay videojuegos activos para mostrar.</p>
         </div>
 
     </div>

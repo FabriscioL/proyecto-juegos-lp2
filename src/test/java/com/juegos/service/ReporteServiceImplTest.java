@@ -9,6 +9,7 @@ import com.juegos.model.Producto;
 import com.juegos.model.Proveedor;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ class ReporteServiceImplTest {
         cliente.setApellidos("Pérez");
         cliente.setCorreo("ana@example.com");
         cliente.setTelefono("5551234");
+        cliente.setRol("CLIENTE");
 
         assertPdf("/reports/clientes_reporte.jrxml", cliente, "Listado de clientes");
     }
@@ -63,7 +65,13 @@ class ReporteServiceImplTest {
 
         byte[] pdf;
         try (plantilla) {
-            pdf = reporteService.generarReportePdf(plantilla, List.of(dato), Map.of("titulo", titulo));
+            Map<String, Object> params = new HashMap<>();
+            params.put("titulo", titulo);
+            InputStream logoStream = getClass().getResourceAsStream("/static/img/logo.jpeg");
+            if (logoStream != null) {
+                params.put("logoEmpresa", logoStream);
+            }
+            pdf = reporteService.generarReportePdf(plantilla, List.of(dato), params);
         }
 
         assertTrue(new String(pdf, 0, 5, StandardCharsets.US_ASCII).equals("%PDF-"));

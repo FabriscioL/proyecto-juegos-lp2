@@ -2,6 +2,7 @@ package com.juegos.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,10 @@ public class ProductoController {
     }
 
     @GetMapping
-    public String listarProductos(Model model) {
+    public String listarProductos(@RequestParam(value = "errorAcceso", required = false) String errorAcceso, Model model) {
+        if ("vendedor".equalsIgnoreCase(errorAcceso)) {
+            model.addAttribute("mensajeError", "Acceso denegado: El rol VENDEDOR solo puede generar reportes y consultar información, no realizar modificaciones.");
+        }
         model.addAttribute("productos", productoService.listarProductos());
         model.addAttribute("categorias", categoriaService.listarCategorias());
         return "productos/lista";
@@ -55,11 +59,19 @@ public class ProductoController {
     @GetMapping("/reporte/pdf")
     public ResponseEntity<byte[]> generarReporteJuegosPdf() {
         ClassPathResource plantilla = new ClassPathResource("reports/juegos_reporte.jrxml");
+        ClassPathResource logoResource = new ClassPathResource("static/img/logo.jpeg");
+
         try (InputStream reporteStream = plantilla.getInputStream()) {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("titulo", "Catálogo de Videojuegos");
+            if (logoResource.exists()) {
+                parametros.put("logoEmpresa", logoResource.getInputStream());
+            }
+
             byte[] pdf = reporteService.generarReportePdf(
                     reporteStream,
                     productoService.listarProductos(),
-                    Map.of("titulo", "Catálogo de videojuegos"));
+                    parametros);
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
@@ -100,6 +112,7 @@ public class ProductoController {
             return "productos/formulario";
         }
         try {
+            producto.setActivo(true);
             productoService.guardarProducto(producto);
             attributes.addFlashAttribute("mensajeExito", "¡Producto guardado con éxito!");
         } catch (Exception e) {
@@ -125,7 +138,7 @@ public class ProductoController {
     public String eliminarProducto(@PathVariable Integer id, RedirectAttributes attributes) {
         try {
             productoService.eliminarProducto(id);
-            attributes.addFlashAttribute("mensajeExito", "¡Producto eliminado correctamente!");
+            attributes.addFlashAttribute("mensajeExito", "¡Producto eliminado lógicamente correctamente!");
         } catch (Exception e) {
             attributes.addFlashAttribute("mensajeError", "No se pudo eliminar el producto.");
         }

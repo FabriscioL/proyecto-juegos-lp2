@@ -16,31 +16,37 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public List<Producto> listarProductos() {
-        return productoRepository.findAll();
+        return productoRepository.findByActivoTrue();
     }
 
     @Override
     public void guardarProducto(Producto producto) {
+        if (producto.getActivo() == null) {
+            producto.setActivo(true);
+        }
         productoRepository.save(producto);
     }
 
     @Override
     public void eliminarProducto(Integer id) {
-        productoRepository.deleteById(id);
+        productoRepository.findById(id).ifPresent(p -> {
+            p.setActivo(false);
+            productoRepository.save(p);
+        });
     }
 
     @Override
     public Producto buscarPorId(Integer id) {
-        return productoRepository.findById(id).orElse(null);
+        return productoRepository.findByIdProductoAndActivoTrue(id).orElse(null);
     }
 
     @Override
     public List<Producto> listarPorCategoria(Integer idCategoria) {
-        return productoRepository.findByCategoriaIdCategoria(idCategoria);
+        return productoRepository.findByCategoriaIdCategoriaAndActivoTrue(idCategoria);
     }
 
     @Override
     public List<Producto> listarPorStockMenor(Integer stock) {
-        return productoRepository.findByStockLessThanEqual(stock);
+        return productoRepository.findByStockLessThanEqualAndActivoTrue(stock);
     }
 }

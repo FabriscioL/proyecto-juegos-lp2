@@ -22,7 +22,7 @@ public class Proveedor {
     private Integer idProveedor;
 
     @Column(nullable = false, length = 100)
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 100)
     private String nombre;
 
@@ -35,7 +35,10 @@ public class Proveedor {
     private String telefono;
 
     @Column(length = 100)
-    @Email
+    @Email(message = "Debe ser un correo electrónico válido")
     @Size(max = 100)
     private String correo;
+
+    @Column(name = "activo", nullable = false)
+    private Boolean activo = true;
 }

@@ -16,27 +16,33 @@ public class Cliente {
     @Column(name = "id_cliente")
     private Long idCliente;
 
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 255)
     private String nombres;
 
-    @NotBlank
+    @NotBlank(message = "El apellido es obligatorio")
     @Size(max = 255)
     private String apellidos;
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "Debe ser un correo electrónico válido")
     @Size(max = 255)
     private String correo;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotBlank(message = "La contraseña es obligatoria")
+    @Size(min = 4, max = 255, message = "La contraseña debe tener al menos 4 caracteres")
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "El teléfono es obligatorio")
     @Size(max = 255)
     private String telefono;
 
     @Size(max = 255)
     private String direccion;
+
+    @Column(name = "rol", nullable = false, length = 20)
+    private String rol = "CLIENTE";
+
+    @Column(name = "activo", nullable = false)
+    private Boolean activo = true;
 }

@@ -1,13 +1,6 @@
 package com.juegos.model;
 
 import jakarta.persistence.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -25,7 +18,7 @@ public class Producto {
     private Integer idProducto;
 
     @Column(nullable = false, length = 100)
-    @NotBlank
+    @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 100)
     private String nombre;
 
@@ -33,21 +26,24 @@ public class Producto {
     private String descripcion;
 
     @Column(nullable = false)
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "El precio es obligatorio")
+    @PositiveOrZero(message = "El precio no puede ser negativo")
     private Double precio;
 
     @Column(nullable = false)
-    @NotNull
-    @PositiveOrZero
+    @NotNull(message = "El stock es obligatorio")
+    @PositiveOrZero(message = "El stock no puede ser negativo")
     private Integer stock;
 
-    @NotBlank
+    @NotBlank(message = "La imagen es obligatoria")
     @Size(max = 255)
     private String imagen;
 
     @ManyToOne
     @JoinColumn(name = "id_categoria")
-    @NotNull
+    @NotNull(message = "Debe seleccionar una categoría")
     private Categoria categoria;
+
+    @Column(name = "activo", nullable = false)
+    private Boolean activo = true;
 }

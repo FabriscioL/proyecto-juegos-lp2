@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Cuenta - JUEGOS.NET</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #2e0910 0%, #120305 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 30px 0;
+        }
+        .register-card {
+            background-color: #240a0f;
+            border: 1px solid #4a0e17;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            width: 100%;
+            max-width: 580px;
+        }
+        .text-accent {
+            color: #ffcc00;
+        }
+        .btn-custom {
+            background-color: #f25c19;
+            border-color: #f25c19;
+            color: #fff;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            background-color: #cc1e36;
+            border-color: #cc1e36;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container p-3">
+        <div class="register-card mx-auto p-4 p-md-5">
+            <div class="text-center mb-4">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 60px; width: auto;" class="mb-3 rounded">
+                <h3 class="fw-bold text-accent mb-1"><i class="bi bi-person-plus-fill me-1"></i> Crear Cuenta</h3>
+                <p class="text-light small">Únete a JUEGOS.NET y adquiere tus videojuegos favoritos</p>
+            </div>
+
+            <form th:action="@{/registro}" th:object="${registroDto}" method="post">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Nombres:</label>
+                        <input type="text" th:field="*{nombres}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Juan" required />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('nombres')}" th:errors="*{nombres}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Apellidos:</label>
+                        <input type="text" th:field="*{apellidos}" class="form-control bg-dark text-white border-secondary" placeholder="Ej. Pérez" required />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('apellidos')}" th:errors="*{apellidos}"></div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label text-accent fw-semibold">Correo Electrónico:</label>
+                    <input type="email" th:field="*{correo}" class="form-control bg-dark text-white border-secondary" placeholder="ejemplo@correo.com" required />
+                    <div class="text-danger small mt-1" th:if="${#fields.hasErrors('correo')}" th:errors="*{correo}"></div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Contraseña (mín. 4 caracteres):</label>
+                        <input type="password" th:field="*{password}" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" required />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Confirmar Contraseña:</label>
+                        <input type="password" th:field="*{confirmarPassword}" class="form-control bg-dark text-white border-secondary" placeholder="••••••••" required />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('confirmarPassword')}" th:errors="*{confirmarPassword}"></div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Teléfono (9 dígitos):</label>
+                        <input type="tel" th:field="*{telefono}" class="form-control bg-dark text-white border-secondary" placeholder="987654321" pattern="[0-9]{9}" title="Debe contener exactamente 9 dígitos numéricos" required />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('telefono')}" th:errors="*{telefono}"></div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label text-accent fw-semibold">Dirección:</label>
+                        <input type="text" th:field="*{direccion}" class="form-control bg-dark text-white border-secondary" placeholder="Av. Principal 123" />
+                        <div class="text-danger small mt-1" th:if="${#fields.hasErrors('direccion')}" th:errors="*{direccion}"></div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between gap-2 mt-4">
+                    <button type="submit" class="btn btn-custom w-50 py-2">
+                        <i class="bi bi-check-circle-fill me-1"></i> Registrarse
+                    </button>
+                    <a th:href="@{/login}" class="btn btn-outline-light w-50 py-2">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+
+            <div class="text-center mt-4">
+                <span class="text-light small">¿Ya tienes una cuenta? </span>
+                <a th:href="@{/login}" class="text-accent text-decoration-none fw-bold small">Inicia sesión</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -2,6 +2,7 @@ package com.juegos.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,11 +49,19 @@ public class ProveedorController {
     @GetMapping("/reporte/pdf")
     public ResponseEntity<byte[]> generarReporteProveedoresPdf() {
         ClassPathResource plantilla = new ClassPathResource("reports/proveedores_reporte.jrxml");
+        ClassPathResource logoResource = new ClassPathResource("static/img/logo.jpeg");
+
         try (InputStream reporteStream = plantilla.getInputStream()) {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("titulo", "Directorio de Proveedores");
+            if (logoResource.exists()) {
+                parametros.put("logoEmpresa", logoResource.getInputStream());
+            }
+
             byte[] pdf = reporteService.generarReportePdf(
                     reporteStream,
                     proveedorService.listarProveedores(),
-                    Map.of("titulo", "Directorio de proveedores"));
+                    parametros);
 
             return ResponseEntity.ok()
                     .contentType(MediaType.APPLICATION_PDF)
@@ -77,6 +86,7 @@ public class ProveedorController {
             return "proveedores/formulario_proveedor";
         }
         try {
+            proveedor.setActivo(true);
             proveedorService.guardarProveedor(proveedor);
             attributes.addFlashAttribute("mensajeExito", "¡Proveedor guardado con éxito!");
         } catch (Exception e) {
@@ -101,7 +111,7 @@ public class ProveedorController {
     public String eliminarProveedor(@PathVariable Integer id, RedirectAttributes attributes) {
         try {
             proveedorService.eliminarProveedor(id);
-            attributes.addFlashAttribute("mensajeExito", "¡Proveedor eliminado correctamente!");
+            attributes.addFlashAttribute("mensajeExito", "¡Proveedor eliminado lógicamente correctamente!");
         } catch (Exception e) {
             attributes.addFlashAttribute("mensajeError", "No se pudo eliminar el proveedor.");
         }

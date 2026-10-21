@@ -14,4 +14,8 @@ public interface ClienteService {
     void eliminarCliente(Long id);
 
     Cliente validarLogin(String correo, String password);
+
+    boolean existePorCorreo(String correo);
+
+    Cliente buscarPorCorreo(String correo);
 }

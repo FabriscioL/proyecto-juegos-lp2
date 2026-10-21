@@ -38,31 +38,66 @@
 		    background-color: #cc1e36;
 		    border-color: #cc1e36;
 		}
+		.badge-admin {
+		    background-color: #ffcc00;
+		    color: #000;
+		    font-weight: bold;
+		}
+		.badge-vendedor {
+		    background-color: #0dcaf0;
+		    color: #000;
+		    font-weight: bold;
+		}
     </style>
 </head>
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom px-3 mb-4">
-        <div class="container-fluid d-flex align-items-center">
-            <a class="navbar-brand d-flex align-items-center py-0" href="/productos">
-                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 50px; width: auto;" class="d-inline-block align-middle">
+        <div class="container-fluid d-flex align-items-center justify-content-between">
+            <a class="navbar-brand d-flex align-items-center py-0" th:href="@{/productos}">
+                <img th:src="@{/img/logo.jpeg}" alt="Logo" style="height: 48px; width: auto;" class="d-inline-block align-middle me-2 rounded">
+                <span class="fw-bold fs-4 text-accent d-none d-sm-inline">JUEGOS.NET</span>
             </a>
-            <div class="d-flex gap-2">
-                <a th:href="@{/productos}" class="btn btn-outline-light btn-sm">Productos</a>
-                <a th:href="@{/clientes}" class="btn btn-outline-light btn-sm">Clientes</a>
+            <div class="d-flex align-items-center gap-2">
+                <a th:href="@{/productos}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-controller"></i> Videojuegos
+                </a>
+                <a th:href="@{/clientes}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-people-fill"></i> <span th:text="${session.usuarioRol == 'ADMIN' ? 'Gestión de Usuarios' : 'Clientes'}"></span>
+                </a>
+                <div class="d-flex align-items-center ms-2 border-start border-secondary ps-3">
+                    <div class="me-2 text-end d-none d-md-block">
+                        <small class="d-block text-light" th:text="${session.usuarioNombre}"></small>
+                        <span th:if="${session.usuarioRol == 'ADMIN'}" class="badge badge-admin">ADMINISTRADOR</span>
+                        <span th:if="${session.usuarioRol == 'VENDEDOR'}" class="badge badge-vendedor">VENDEDOR</span>
+                    </div>
+                    <a th:href="@{/logout}" class="btn btn-outline-danger btn-sm" title="Cerrar sesión">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
     <div class="container mb-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="text-accent fw-bold"><i class="bi bi-truck"></i> Mantenimiento de Proveedores</h2>
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <h2 class="text-accent fw-bold mb-0"><i class="bi bi-truck"></i> Mantenimiento de Proveedores</h2>
             <div class="d-flex gap-2">
                 <a th:href="@{/proveedores/reporte/pdf}" target="_blank" rel="noopener" class="btn btn-outline-light btn-sm">
                     <i class="bi bi-file-earmark-pdf"></i> Reporte PDF
                 </a>
-                <a th:href="@{/proveedores/nuevo}" class="btn btn-primary-custom btn-sm fw-bold"><i class="bi bi-plus-circle"></i> Nuevo Proveedor</a>
+                <!-- Nuevo Proveedor: Solo ADMIN -->
+                <a th:if="${session.usuarioRol == 'ADMIN'}" th:href="@{/proveedores/nuevo}" class="btn btn-primary-custom btn-sm fw-bold">
+                    <i class="bi bi-plus-circle"></i> Nuevo Proveedor
+                </a>
             </div>
+        </div>
+
+        <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${mensajeExito}"></span>
+        </div>
+        <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${mensajeError}"></span>
         </div>
 
         <div class="card card-custom p-3 shadow">
@@ -71,27 +106,32 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Empresa / Nombre</th>
+                            <th>Empresa / Proveedor</th>
                             <th>Contacto</th>
                             <th>Teléfono</th>
                             <th>Correo</th>
-                            <th class="text-center">Acciones</th>
+                            <th th:if="${session.usuarioRol == 'ADMIN'}" class="text-center">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="pr : ${proveedores}">
                             <td th:text="${pr.idProveedor}"></td>
-                            <td th:text="${pr.nombre}"></td>
+                            <td class="fw-bold" th:text="${pr.nombre}"></td>
                             <td th:text="${pr.contacto}"></td>
                             <td th:text="${pr.telefono}"></td>
                             <td th:text="${pr.correo}"></td>
-                            <td class="text-center">
-                                <a th:href="@{/proveedores/editar/{id}(id=${pr.idProveedor})}" class="btn btn-warning btn-sm fw-bold">Editar</a>
-                                <a th:href="@{/proveedores/eliminar/{id}(id=${pr.idProveedor})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este proveedor?');">Eliminar</a>
+                            <!-- Acciones solo para ADMIN -->
+                            <td th:if="${session.usuarioRol == 'ADMIN'}" class="text-center">
+                                <a th:href="@{/proveedores/editar/{id}(id=${pr.idProveedor})}" class="btn btn-warning btn-sm fw-bold">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </a>
+                                <a th:href="@{/proveedores/eliminar/{id}(id=${pr.idProveedor})}" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de desactivar (borrado lógico) este proveedor?');">
+                                    <i class="bi bi-trash"></i> Eliminar
+                                </a>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(proveedores)}">
-                            <td colspan="6" class="text-center text-muted">No hay proveedores registrados.</td>
+                            <td th:colspan="${session.usuarioRol == 'ADMIN' ? 6 : 5}" class="text-center text-muted py-4">No hay proveedores activos registrados.</td>
                         </tr>
                     </tbody>
                 </table>

@@ -12,41 +12,125 @@
               bottomMargin="20"
               whenNoDataType="AllSectionsNoDetail">
     <parameter name="titulo" class="java.lang.String"/>
+    <parameter name="logoEmpresa" class="java.io.InputStream"/>
+
     <field name="idProveedor" class="java.lang.Integer"/>
     <field name="nombre" class="java.lang.String"/>
     <field name="contacto" class="java.lang.String"/>
     <field name="telefono" class="java.lang.String"/>
     <field name="correo" class="java.lang.String"/>
 
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+
     <title>
-        <band height="50">
+        <band height="75">
+            <image onErrorType="Blank">
+                <reportElement x="0" y="5" width="65" height="65"/>
+                <imageExpression><![CDATA[$P{logoEmpresa}]]></imageExpression>
+            </image>
             <textField>
-                <reportElement x="0" y="10" width="555" height="30"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
+                <reportElement x="75" y="10" width="315" height="30" forecolor="#4A0E17"/>
+                <textElement verticalAlignment="Middle">
                     <font size="18" isBold="true"/>
                 </textElement>
-                <textFieldExpression><![CDATA[$P{titulo}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{titulo} != null ? $P{titulo} : "JUEGOS.NET - Directorio de Proveedores"]]></textFieldExpression>
             </textField>
+            <staticText>
+                <reportElement x="75" y="42" width="280" height="18" forecolor="#666666"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="10" isItalic="true"/>
+                </textElement>
+                <text><![CDATA[Directorio Oficial de Proveedores de Videojuegos]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="370" y="15" width="80" height="16" forecolor="#4A0E17"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font size="9" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Fecha emisión:]]></text>
+            </staticText>
+            <textField pattern="dd/MM/yyyy HH:mm:ss">
+                <reportElement x="455" y="15" width="100" height="16"/>
+                <textElement textAlignment="Left" verticalAlignment="Middle">
+                    <font size="9"/>
+                </textElement>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="72" width="555" height="1" forecolor="#CC1E36"/>
+            </line>
         </band>
     </title>
 
     <columnHeader>
-        <band height="24">
-            <staticText><reportElement x="0" y="0" width="45" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[ID]]></text></staticText>
-            <staticText><reportElement x="45" y="0" width="140" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Proveedor]]></text></staticText>
-            <staticText><reportElement x="185" y="0" width="120" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Contacto]]></text></staticText>
-            <staticText><reportElement x="305" y="0" width="100" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Teléfono]]></text></staticText>
-            <staticText><reportElement x="405" y="0" width="150" height="24"/><textElement verticalAlignment="Middle"><font isBold="true"/></textElement><text><![CDATA[Correo]]></text></staticText>
+        <band height="26">
+            <rectangle>
+                <reportElement x="0" y="2" width="555" height="22" backcolor="#4A0E17"/>
+                <graphicElement><pen lineWidth="0.0"/></graphicElement>
+            </rectangle>
+            <staticText><reportElement x="5" y="2" width="40" height="22" forecolor="#FFFFFF"/><textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement><text><![CDATA[ID]]></text></staticText>
+            <staticText><reportElement x="45" y="2" width="155" height="22" forecolor="#FFFFFF"/><textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement><text><![CDATA[Empresa / Proveedor]]></text></staticText>
+            <staticText><reportElement x="200" y="2" width="120" height="22" forecolor="#FFFFFF"/><textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement><text><![CDATA[Contacto]]></text></staticText>
+            <staticText><reportElement x="320" y="2" width="85" height="22" forecolor="#FFFFFF"/><textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement><text><![CDATA[Teléfono]]></text></staticText>
+            <staticText><reportElement x="405" y="2" width="145" height="22" forecolor="#FFFFFF"/><textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement><text><![CDATA[Correo]]></text></staticText>
         </band>
     </columnHeader>
 
     <detail>
-        <band height="22">
-            <textField><reportElement x="0" y="0" width="45" height="22"/><textFieldExpression><![CDATA[$F{idProveedor}]]></textFieldExpression></textField>
-            <textField isBlankWhenNull="true"><reportElement x="45" y="0" width="140" height="22"/><textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression></textField>
-            <textField isBlankWhenNull="true"><reportElement x="185" y="0" width="120" height="22"/><textFieldExpression><![CDATA[$F{contacto}]]></textFieldExpression></textField>
-            <textField isBlankWhenNull="true"><reportElement x="305" y="0" width="100" height="22"/><textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression></textField>
-            <textField isBlankWhenNull="true"><reportElement x="405" y="0" width="150" height="22"/><textFieldExpression><![CDATA[$F{correo}]]></textFieldExpression></textField>
+        <band height="24">
+            <textField>
+                <reportElement x="5" y="2" width="40" height="20"/>
+                <textElement verticalAlignment="Middle"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{idProveedor}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="45" y="2" width="155" height="20"/>
+                <textElement verticalAlignment="Middle"><font size="9" isBold="true"/></textElement>
+                <textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="200" y="2" width="120" height="20"/>
+                <textElement verticalAlignment="Middle"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{contacto}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="320" y="2" width="85" height="20"/>
+                <textElement verticalAlignment="Middle"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{telefono}]]></textFieldExpression>
+            </textField>
+            <textField isBlankWhenNull="true">
+                <reportElement x="405" y="2" width="145" height="20"/>
+                <textElement verticalAlignment="Middle"><font size="9"/></textElement>
+                <textFieldExpression><![CDATA[$F{correo}]]></textFieldExpression>
+            </textField>
+            <line>
+                <reportElement x="0" y="23" width="555" height="1" forecolor="#E0E0E0"/>
+            </line>
         </band>
     </detail>
+
+    <pageFooter>
+        <band height="24">
+            <line>
+                <reportElement x="0" y="2" width="555" height="1" forecolor="#CC1E36"/>
+            </line>
+            <textField>
+                <reportElement x="0" y="4" width="280" height="18" forecolor="#777777"/>
+                <textElement verticalAlignment="Middle"><font size="8"/></textElement>
+                <textFieldExpression><![CDATA["Reporte generado por JUEGOS.NET"]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="435" y="4" width="80" height="18" forecolor="#777777"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle"><font size="8"/></textElement>
+                <textFieldExpression><![CDATA["Página "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement x="515" y="4" width="40" height="18" forecolor="#777777"/>
+                <textElement verticalAlignment="Middle"><font size="8"/></textElement>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
 </jasperReport>
