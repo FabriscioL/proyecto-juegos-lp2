@@ -102,6 +102,11 @@ proyecto-juegos-lp2/
    spring.datasource.password=mysql
    ```
 3. **Compilar y Ejecutar:**
+   En Windows PowerShell:
+   ```powershell
+   .\mvnw.cmd spring-boot:run
+   ```
+   En macOS/Linux:
    ```bash
    ./mvnw spring-boot:run
    ```

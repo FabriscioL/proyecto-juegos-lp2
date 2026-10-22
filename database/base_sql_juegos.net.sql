@@ -124,22 +124,23 @@ ON DUPLICATE KEY UPDATE
     activo = VALUES(activo);
 
 -- 4. USUARIOS (Administradores, Vendedores y Clientes para pruebas)
-INSERT INTO cliente (id_cliente, nombres, apellidos, correo, password, telefono, direccion, rol, activo) VALUES
-(1, 'Administrador', 'Principal', 'admin@juegos.net', '12345', '999999999', 'Oficina Central Juegos.Net, Lima', 'ADMIN', true),
-(2, 'Vendedor', 'Uno', 'vendedor1@juegos.net', '12345', '988888888', 'Tienda Miraflores, Lima', 'VENDEDOR', true),
-(3, 'Vendedora', 'Camila Torres', 'vendedor2@juegos.net', '12345', '987777777', 'Tienda San Isidro, Lima', 'VENDEDOR', true),
-(4, 'Cristofer', 'Labán Guerrero', 'cristofer@gmail.com', '123456', '987654321', 'Av. Argentina 123, Lima', 'CLIENTE', true),
-(5, 'Valentino', 'Melendez Ninancuro', 'valentino@gmail.com', '123456', '912345678', 'Jr. Los Rosales 456, Lima', 'CLIENTE', true),
-(6, 'Fabriscio', 'Lopez Cusipuma', 'fabricio.m@gmail.com', '123456', '923456321', 'Calle Las Begonias 789, San Isidro', 'CLIENTE', true),
-(7, 'Juan', 'Huatuco Rojas', 'juan.m@gmail.com', '123456', '923456123', 'Calle Las Palmeras 789, Rímac', 'CLIENTE', true),
-(8, 'Diego', 'Alvarez Castro', 'diego.a@gmail.com', '123456', '934567891', 'Av. Javier Prado 2040, San Borja', 'CLIENTE', true),
-(9, 'Mariana', 'Gutiérrez Peña', 'mariana.g@gmail.com', '123456', '945678912', 'Jr. Ayacucho 312, Surco', 'CLIENTE', true),
-(10, 'Rodrigo', 'Benavides Lara', 'rodrigo.b@gmail.com', '123456', '956789123', 'Av. Universitaria 1500, San Miguel', 'CLIENTE', true),
-(11, 'Andrea', 'Palacios Romero', 'andrea.p@gmail.com', '123456', '967891234', 'Calle Los Sauces 450, Magdalena', 'CLIENTE', true),
-(12, 'Sebastián', 'Vargas Salazar', 'sebastian.v@gmail.com', '123456', '978912345', 'Av. La Marina 2500, Pueblo Libre', 'CLIENTE', true),
-(13, 'Luciana', 'Mendoza Chávez', 'luciana.m@gmail.com', '123456', '989012345', 'Calle Berlín 820, Miraflores', 'CLIENTE', true),
-(14, 'Carlos', 'Espinoza Navarro', 'carlos.e@gmail.com', '123456', '990123456', 'Av. Salaverry 1120, Jesús María', 'CLIENTE', true),
-(15, 'Valeria', 'Quispe Huamán', 'valeria.q@gmail.com', '123456', '911234567', 'Jr. Huancavelica 540, Cercado de Lima', 'CLIENTE', true)
+-- Use the unique email instead of fixed IDs so existing IDs cannot redirect an upsert to another account.
+INSERT INTO cliente (nombres, apellidos, correo, password, telefono, direccion, rol, activo) VALUES
+('Administrador', 'Principal', 'admin@juegos.net', '12345', '999999999', 'Oficina Central Juegos.Net, Lima', 'ADMIN', true),
+('Vendedor', 'Uno', 'vendedor1@juegos.net', '12345', '988888888', 'Tienda Miraflores, Lima', 'VENDEDOR', true),
+('Vendedora', 'Camila Torres', 'vendedor2@juegos.net', '12345', '987777777', 'Tienda San Isidro, Lima', 'VENDEDOR', true),
+('Cristofer', 'Labán Guerrero', 'cristofer@gmail.com', '123456', '987654321', 'Av. Argentina 123, Lima', 'CLIENTE', true),
+('Valentino', 'Melendez Ninancuro', 'valentino@gmail.com', '123456', '912345678', 'Jr. Los Rosales 456, Lima', 'CLIENTE', true),
+('Fabriscio', 'Lopez Cusipuma', 'fabricio.m@gmail.com', '123456', '923456321', 'Calle Las Begonias 789, San Isidro', 'CLIENTE', true),
+('Juan', 'Huatuco Rojas', 'juan.m@gmail.com', '123456', '923456123', 'Calle Las Palmeras 789, Rímac', 'CLIENTE', true),
+('Diego', 'Alvarez Castro', 'diego.a@gmail.com', '123456', '934567891', 'Av. Javier Prado 2040, San Borja', 'CLIENTE', true),
+('Mariana', 'Gutiérrez Peña', 'mariana.g@gmail.com', '123456', '945678912', 'Jr. Ayacucho 312, Surco', 'CLIENTE', true),
+('Rodrigo', 'Benavides Lara', 'rodrigo.b@gmail.com', '123456', '956789123', 'Av. Universitaria 1500, San Miguel', 'CLIENTE', true),
+('Andrea', 'Palacios Romero', 'andrea.p@gmail.com', '123456', '967891234', 'Calle Los Sauces 450, Magdalena', 'CLIENTE', true),
+('Sebastián', 'Vargas Salazar', 'sebastian.v@gmail.com', '123456', '978912345', 'Av. La Marina 2500, Pueblo Libre', 'CLIENTE', true),
+('Luciana', 'Mendoza Chávez', 'luciana.m@gmail.com', '123456', '989012345', 'Calle Berlín 820, Miraflores', 'CLIENTE', true),
+('Carlos', 'Espinoza Navarro', 'carlos.e@gmail.com', '123456', '990123456', 'Av. Salaverry 1120, Jesús María', 'CLIENTE', true),
+('Valeria', 'Quispe Huamán', 'valeria.q@gmail.com', '123456', '911234567', 'Jr. Huancavelica 540, Cercado de Lima', 'CLIENTE', true)
 ON DUPLICATE KEY UPDATE
     nombres = VALUES(nombres),
     apellidos = VALUES(apellidos),
@@ -151,9 +152,9 @@ ON DUPLICATE KEY UPDATE
 
 -- 5. HISTORIAL DE VENTAS Y DETALLE
 INSERT INTO venta (id_venta, fecha_venta, total, id_cliente) VALUES  
-(1, '2026-10-01 14:30:00', 359.89, 4),
-(2, '2026-10-05 18:15:00', 249.99, 5),
-(3, '2026-10-10 20:00:00', 229.00, 6)
+(1, '2026-10-01 14:30:00', 359.89, (SELECT id_cliente FROM cliente WHERE correo = 'cristofer@gmail.com')),
+(2, '2026-10-05 18:15:00', 249.99, (SELECT id_cliente FROM cliente WHERE correo = 'valentino@gmail.com')),
+(3, '2026-10-10 20:00:00', 229.00, (SELECT id_cliente FROM cliente WHERE correo = 'fabricio.m@gmail.com'))
 ON DUPLICATE KEY UPDATE total = VALUES(total);
 
 INSERT INTO detalle_venta (id_detalle, id_venta, id_producto, cantidad, precio_unitario, subtotal) VALUES  
